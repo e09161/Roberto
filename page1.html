@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roberto Aguirre Guardia — Interview Practice</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.8; padding: 20px; max-width: 900px; margin: auto; background-color: #fefefe; }
+    .exchange { margin-bottom: 24px; }
+    .interviewer { font-weight: bold; color: #2a2a2a; margin-bottom: 6px; }
+    .roberto { margin-left: 20px; }
+    .gap { position: relative; border-bottom: 2px dotted #555; cursor: pointer; color: black; }
+    .gap::after { content: attr(data-word); position: absolute; bottom: 100%; left: 0; background: #f9f9f9; color: #333; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; white-space: nowrap; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 10; }
+    .gap:hover::after { opacity: 1; }
+    button { margin-top: 30px; padding: 10px 15px; font-size: 16px; background-color: #0078d4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #005fa3; }
+  </style>
+</head>
+<body>
+
+  <h2>🎤 Interview Practice: Hover to Reveal</h2>
+  <div id="interview"></div>
+  <button onclick="generateGaps()">🔄 New Gaps</button>
+
+  <script>
+    const originalText = `
+Interviewer: Can you tell us why you are interested in the Operations Director role for digital projects in a hedge fund?
+
+Roberto: I see this role as the perfect intersection of my expertise in digital transformation and my passion for financial services. Hedge funds operate in a highly dynamic environment where operational efficiency and digital innovation are critical. My background in leading large-scale digital projects positions me to strengthen your operational backbone while driving innovation.
+
+Interviewer: What relevant experience do you bring from your past roles?
+
+Roberto: At NTTDATA Colombia, I managed the largest consulting account with Grupo AVAL, ensuring financial stability and operational excellence across multiple projects. At VASS Colombia, I led the modernization of Porvenir’s pension fund digital channels, which earned the LATAM Digital Award 2019 and was the first Azure cloud migration in the AVAL Group. These experiences taught me how to deliver digital projects that improve resilience and client trust in financial institutions.
+
+Interviewer: How have you applied AI and automation in your work?
+
+Roberto: At DigitalHubAssist LLC in the U.S., I lead the engineering team behind the MedicalHubAssist.ai platform. We integrated conversational assistants, teleconsultation, and voice transcription to automate critical healthcare processes. The same principles of automation and AI can be applied to hedge fund operations — from compliance workflows to client reporting — to reduce risk and increase efficiency.
+
+Interviewer: What leadership qualities would you bring as Operations Director?
+
+Roberto: I combine strategic vision with hands-on leadership. I’ve consistently achieved low staff turnover and strong financial results by fostering collaboration and accountability. I’ve also been recognized as a thought leader, speaking at CLARO’s technology summit and teaching innovation at Sergio Arboleda University. These experiences reflect my ability to inspire teams while delivering measurable results.
+
+Interviewer: Why should we choose you over other candidates?
+
+Roberto: I bring a unique combination of technical expertise, operational leadership, and resilience. My track record shows not only results but also a commitment to uplifting others through mentoring, education, and innovation. I see this opportunity not just as personal growth, but as a responsibility to strengthen your fund’s operational excellence and long-term competitiveness.
+
+Interviewer: Give us a general summary of your software development experience. How long have you been developing, and in what stack?
+
+Roberto: I started my career as a software engineer more than 15 years ago, working primarily with Java and .NET for enterprise systems. Over time, I expanded into full-stack development with JavaScript frameworks and Python for data-driven applications. This foundation gave me the technical depth to later lead large-scale digital transformation projects.
+
+Interviewer: Tell us about your experience in developing and leading AI products. Do you have experience with the LangChain ecosystem (LangGraph/LangSmith)?
+
+Roberto: In recent years, I have led AI-focused initiatives, including conversational assistants and automation platforms. While I have not used LangChain extensively in production, I am familiar with its ecosystem and have explored LangGraph and LangSmith for prototyping. My strength lies in quickly evaluating frameworks and integrating them into scalable architectures when they add value.
+
+Interviewer: How have you managed CI/CD deployment and optimization of AI models in the cloud (AWS/Azure/GCP) with a DevOps mindset?
+
+Roberto: I have overseen the deployment of AI models using Azure DevOps pipelines and AWS SageMaker. My approach emphasizes containerization with Docker and orchestration with Kubernetes, ensuring reproducibility and scalability. I also implement monitoring and retraining workflows to keep models optimized in production environments.
+
+Interviewer: In what ways have you used vector databases and web scraping tools to build or improve AI applications?
+
+Roberto: I have applied vector databases such as Pinecone and FAISS to enable semantic search and retrieval-augmented generation. Combined with web scraping pipelines in Python, I have built knowledge bases that feed into conversational AI systems. This combination has been key to improving accuracy and contextual relevance in applied AI solutions.
+`;
+
+    function generateGaps() {
+      const container = document.getElementById('interview');
+      container.innerHTML = '';
+
+      const blocks = originalText.trim().split('\n\n');
+      blocks.forEach(block => {
+        const idx = block.indexOf(':');
+        if (idx === -1) return;
+        const speaker = block.slice(0, idx).trim();
+        const content = block.slice(idx + 1).trim();
+
+        const div = document.createElement('div');
+        div.className = 'exchange';
+
+        if (speaker.toLowerCase() === 'roberto') {
+          div.innerHTML = `<div class="roberto"><strong>${speaker}:</strong> ${applyGaps(content, 0.2)}</div>`;
+        } else {
+          div.innerHTML = `<div class="interviewer"><strong>${speaker}:</strong> ${content}</div>`;
+        }
+
+        container.appendChild(div);
+      });
+    }
+
+    function applyGaps(text, density = 0.1) {
+      const words = text.split(/\s+/);
+      const numGaps = Math.max(1, Math.floor(words.length * density));
+      const gapIndices = new Set();
+
+      while (gapIndices.size < numGaps) {
+        const i = Math.floor(Math.random() * words.length);
+        const clean = words[i].replace(/^[^\w]+|[^\w]+$/g, '');
+        if (clean.length > 2) gapIndices.add(i);
+      }
+
+      return words.map((word, i) => {
+        const leading = (word.match(/^[^\w]+/) || [''])[0];
+        const trailing = (word.match(/[^\w]+$/) || [''])[0];
+        const core = word.replace(/^[^\w]+|[^\w]+$/g, '');
+        if (gapIndices.has(i)) {
+          return `${leading}<span class="gap" data-word="${core}">__________</span>${trailing}`;
+        }
+        return word;
+      }).join(' ');
+    }
+
+    generateGaps();
+  </script>
+
+</body>
+</html>
