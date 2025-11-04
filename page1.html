@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,11 +13,19 @@
     .gap:hover::after { opacity: 1; }
     button { margin-top: 30px; padding: 10px 15px; font-size: 16px; background-color: #0078d4; color: white; border: none; border-radius: 4px; cursor: pointer; }
     button:hover { background-color: #005fa3; }
+    audio { margin: 20px 0; width: 100%; }
   </style>
 </head>
 <body>
 
   <h2>🎤 Interview Practice: Hover to Reveal</h2>
+
+  <!-- 🎧 Audio player for Roberto's interview -->
+  <audio controls>
+    <source src="roberto_interview.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
   <div id="interview"></div>
   <button onclick="generateGaps()">🔄 New Gaps</button>
 
