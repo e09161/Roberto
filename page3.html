@@ -151,7 +151,7 @@ Roberto: The opportunity to innovate with senior-level developers, focus fully o
         div.className = 'exchange';
 
         if (speaker.toLowerCase() === 'roberto') {
-          div.innerHTML = `<div class="roberto"><strong>${speaker}:</strong> ${applyGaps(content, 0.5)}</div>`;
+          div.innerHTML = `<div class="roberto"><strong>${speaker}:</strong> ${applyGaps(content, 0.2)}</div>`;
         } else {
           div.innerHTML = `<div class="interviewer"><strong>${speaker}:</strong> ${content}</div>`;
         }
@@ -160,7 +160,7 @@ Roberto: The opportunity to innovate with senior-level developers, focus fully o
       });
     }
 
-    function applyGaps(text, density = 0.5) {
+    function applyGaps(text, density = 0.2) {
       const words = text.split(' ');
       const numGaps = Math.floor(words.length * density);
       const gapIndices = new Set();
