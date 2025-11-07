@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Roberto's Interview Practice</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.8; padding: 20px; max-width: 900px; margin: auto; background-color: #fefefe; }
+    .exchange { margin-bottom: 24px; }
+    .interviewer { font-weight: bold; color: #2a2a2a; margin-bottom: 6px; }
+    .roberto { margin-left: 20px; }
+    .gap { position: relative; border-bottom: 2px dotted #555; cursor: pointer; color: black; }
+    .gap::after { content: attr(data-word); position: absolute; bottom: 100%; left: 0; background: #f9f9f9; color: #333; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; white-space: nowrap; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 10; }
+    .gap:hover::after { opacity: 1; }
+    button { margin-top: 30px; padding: 10px 15px; font-size: 16px; background-color: #0078d4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #005fa3; }
+    audio { margin: 20px 0; width: 100%; }
+  </style>
+</head>
+<body>
+
+  <h2>🎤 Interview Practice: Hover to Reveal</h2>
+
+  <!-- 🎧 Audio player for Roberto's interview -->
+  <audio controls>
+    <source src="roberto_interview.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="interview"></div>
+  <button onclick="generateGaps()">🔄 New Gaps</button>
+
+  <script>
+    const originalText = `
+Interviewer: Why are you interested in joining Lumenalta for this AI/ML engineering role?
+Roberto: Lumenalta’s mission to design, build, and deploy AI models into production excites me. I want to contribute to compliance-first solutions in regulated industries, where intelligent automation can deliver measurable impact.
+
+Interviewer: What relevant experience do you bring that matches the role’s requirements?
+Roberto: I have over five years of experience deploying AI into production at scale. My background includes backend Python development, workflow automation, and intelligent document processing, which aligns directly with Lumenalta’s focus.
+
+Interviewer: How have you worked with backend Python services and automation workflows?
+Roberto: I’ve built reliable Python backends with FastAPI and Flask, containerized with Docker, and orchestrated tasks with Celery and Kubernetes. These services powered automation workflows similar to those Lumenalta requires.
+
+Interviewer: How have you implemented enterprise-scale data pipelines and quality monitoring?
+Roberto: I design pipelines using n8n for orchestration and AWS Kinesis for real-time ingestion, with Python handling parsing, validation, and transformation. Storage is in PostgreSQL with strict schemas, indexing, and retention policies. Quality is enforced via automated checks (missing values, deduplication, anomaly detection), and I publish monitoring dashboards tracking throughput, latency, error rates, and data drift. Alerts trigger remediation playbooks so the pipeline scales while staying compliant and reliable.
+
+Interviewer: What is your experience with training and optimizing models on compliance standards?
+Roberto: I trained models on regulatory datasets, focusing on banking rules and compliance. I optimized them for accuracy and fairness, embedding auditability and transparency into every feature.
+
+Interviewer: How would you build intelligent routing for approvals and escalations?
+Roberto: (to be defined)
+
+Interviewer: Which ML frameworks and pipeline tools are you strongest with?
+Roberto: Hugging Face Transformers. I use pre-trained models such as BERT and GPT, and apply fine-tuning for large language models. My focus is on NLP tasks like classification, named entity recognition, and question answering. In real banking use cases, I’ve applied these models to automatically analyze legal contracts, extract information from financial documents, and build intelligent chatbots.
+
+Interviewer: How do you collaborate with engineering leadership on architecture and delivery?
+Roberto: I collaborate within SCRUM and KANBAN: sprint planning, stand-ups, and reviews keep priorities aligned; Kanban boards provide flow and transparency. I contribute to backlog refinement and architectural discussions, documenting decisions and outcomes. This cadence supports fast iteration, clear ownership, and predictable delivery while adapting to evolving requirements.
+
+Interviewer: Why do you think you are a strong fit for Lumenalta’s culture?
+Roberto: I thrive in startup-like environments with evolving tech stacks. I value collaboration, adaptability, and being dedicated to one project at a time. Lumenalta’s culture of innovation and teamwork resonates with me.
+
+Interviewer: What excites you most about working at Lumenalta?
+Roberto: The opportunity to innovate with senior-level developers, focus fully on one project, and use leading technologies excites me. I see it as a place where I can grow while contributing meaningful solutions.
+`;
+
+    function generateGaps() {
+      const container = document.getElementById('interview');
+      container.innerHTML = '';
+
+      const blocks = originalText.trim().split('\n\n');
+      blocks.forEach(block => {
+        const idx = block.indexOf(':');
+        if (idx === -1) return;
+        const speaker = block.slice(0, idx).trim();
+        const content = block.slice(idx + 1).trim();
+
+        const div = document.createElement('div');
+        div.className = 'exchange';
+
+        if (speaker.toLowerCase() === 'roberto') {
+          div.innerHTML = `<div class="roberto"><strong>${speaker}:</strong> ${applyGaps(content, 0.3)}</div>`;
+        } else {
+          div.innerHTML = `<div class="interviewer"><strong>${speaker}:</strong> ${content}</div>`;
+        }
+
+        container.appendChild(div);
+      });
+    }
+
+    function applyGaps(text, density = 0.3) {
+      const words = text.split(/\s+/);
+      const numGaps = Math.max(1, Math.floor(words.length * density));
+      const gapIndices = new Set();
+
+      let guard = 0;
+      while (gapIndices.size < numGaps && guard < words.length * 3) {
+        guard++;
+        const i = Math.floor(Math.random() * words.length);
+        const clean = words[i].replace(/[^\wáéíóúüñ]+/gi, '');
+        if (clean.length > 2) gapIndices.add(i);
+      }
+
+      return words.map((word, i) => {
+        const leading = word.match(/^[^\wáéíóúüñ]+/gi)?.[0] || '';
+        const trailing = word.match(/[^\wáéíóúüñ]+$/gi)?.[0] || '';
+        const core = word.replace(/^[^\wáéíóúüñ]+|[^\wáéíóúüñ]+$/gi, '');
+        if (gapIndices.has(i) && core.length) {
+          return `${leading}<span class="gap" data-word="${core}">__________</span>${trailing}`;
+        }
+        return word;
+      }).join(' ');
+    }
+
+    generateGaps();
+  </script>
+
+</body>
+</html>
